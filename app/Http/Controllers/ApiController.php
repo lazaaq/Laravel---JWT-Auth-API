@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use JWTAuth;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Validator;
@@ -53,12 +54,13 @@ class ApiController extends Controller
 
         //Send failed response if request is not valid
         if ($validator->fails()) {
-            return "bodoh";
+            return response()->json(['error' => $validator->messages()], 200);
         }
 
         //Request is validated
         //Crean token
         try {
+            // config()->set('auth.providers', '\App\Models\Admin::class');
             $token = JWTAuth::attempt($request->all());
             if (!$token) {
                 return response()->json([
